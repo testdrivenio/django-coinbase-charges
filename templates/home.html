@@ -14,7 +14,7 @@
           <h5 class="card-title">{{ charge.name }}</h5>
           <p class="card-text">
             {{ charge.description }}<br>
-            {{ charge.local_price.amount }} {{ charge.local_price.currency }}
+            {{ charge.pricing.local.amount }} {{ charge.pricing.local.currency }}
           </p>
           <div>
             <a class="btn btn-primary w-100" href="{{ charge.hosted_url }}">Purchase</a>
