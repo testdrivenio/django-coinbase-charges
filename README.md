@@ -1,5 +1,7 @@
 # Django Coinbase Tutorial
 
+This repository shows how to accept payments using the [Coinbase Charges API](https://commerce.coinbase.com/docs/api/#charges).
+
 ## Want to learn how to build this?
 
 Check out the [post](#).
@@ -26,7 +28,7 @@ Check out the [post](#).
     (venv)$ python manage.py migrate
     ```
 
-1. Add your Stripe test secret and test publishable keys to the *settings.py* file:
+1. Add your Coinbase Commerce API key and webhook secret to *settings.py* file:
 
     ```python
     COINBASE_COMMERCE_API_KEY = '<your coinbase api key here>'
