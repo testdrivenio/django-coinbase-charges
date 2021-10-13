@@ -1,5 +1,7 @@
+import logging
+
 from coinbase_commerce.client import Client
-from coinbase_commerce.error import WebhookInvalidPayload, SignatureVerificationError
+from coinbase_commerce.error import SignatureVerificationError, WebhookInvalidPayload
 from coinbase_commerce.webhook import Webhook
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -20,12 +22,12 @@ def home_view(request):
             'currency': 'USD'
         },
         'pricing_type': 'fixed_price',
+        'redirect_url': domain_url + 'success/',
+        'cancel_url': domain_url + 'cancel/',
         'metadata': {
             'customer_id': request.user.id if request.user.is_authenticated else None,
             'customer_username': request.user.username if request.user.is_authenticated else None,
         },
-        'redirect_url': domain_url + 'success/',
-        'cancel_url': domain_url + 'cancel/',
     }
     charge = client.charge.create(**product)
 
@@ -45,6 +47,8 @@ def cancel_view(request):
 @csrf_exempt
 @require_http_methods(['POST'])
 def coinbase_webhook(request):
+    logger = logging.getLogger(__name__)
+
     request_data = request.body.decode('utf-8')
     request_sig = request.headers.get('X-CC-Webhook-Signature', None)
     webhook_secret = settings.COINBASE_COMMERCE_WEBHOOK_SHARED_SECRET
@@ -56,11 +60,15 @@ def coinbase_webhook(request):
         # https://commerce.coinbase.com/docs/api/#webhooks
 
         if event['type'] == 'charge:confirmed':
-            print('Payment has been successful.')
+            logger.info('Payment confirmed.')
+            customer_id = event['data']['metadata']['customer_id']
+            customer_username = event['data']['metadata']['customer_username']
             # TODO: run some custom code here
+            # you can also use 'customer_id' or 'customer_username'
+            # to fetch an actual Django user
 
     except (SignatureVerificationError, WebhookInvalidPayload) as e:
         return HttpResponse(e, status=400)
 
-    print(f'Received event: id={event.id}, type={event.type}')
+    logger.info(f'Received event: id={event.id}, type={event.type}')
     return HttpResponse('ok', status=200)
