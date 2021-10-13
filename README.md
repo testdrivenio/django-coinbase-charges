@@ -1,6 +1,6 @@
-# Django Coinbase Charges Tutorial
+# Django Coinbase Charges
 
-This repository shows how to accept payments using the [Coinbase Charges API](https://commerce.coinbase.com/docs/api/#charges).
+Accept payments using the [Coinbase Charges API](https://commerce.coinbase.com/docs/api/#charges).
 
 ## Want to learn how to build this?
 
